@@ -362,11 +362,43 @@ passport.use(
     - ou ir na aba `Auth` do tipo `Bearer` e colar o token lá
     - testar a requisição, que deve ser `201`
 
-
 ### Tratamento de erros do login
+
+- tratar o comportamento da resposta quando algo dá errado no login
+- criar um novo arquivo `middlewares-autenticacao.js` e colocar lá todo o processo de tratamento de erro (if...)
+- depois voltar ao arquivo `usuarios-rotas.js`: importar este middleware e usá-lo no lugar do `passport` na rota de login
+
+```javascript
+app
+    .route("/usuario/login")
+    .post(middlewaresAutenticacao.local, usuariosControlador.login);
+```
 
 ### Tratamento de erros do token
 
+- vamos fazer a mesma coisa que fizemos para a estratégia local para a estratégia bearer no `middlewares-autenticacao.js`
+- depois, adicionar este arquivo no `index.js`
+
+`middlewaresAutenticacao: require("./middlewares-autenticacao")`
+
+- ir no `posts-rotas.js` e importar lá também além de usar na rota post
+
+```javascript
+const { middlewaresAutenticacao } = require("../usuarios")
+
+.post(
+      middlewaresAutenticacao.bearer,
+      postsControlador.adiciona
+    );
+```
+
+- voltar no `usuarios-rota.js` e adicionar o middlewares na rota de deletar
+
+```javascript
+app
+    .route("/usuario/:id")
+    .delete(middlewaresAutenticacao.bearer, usuariosControlador.deleta);
+````
 
 
 
