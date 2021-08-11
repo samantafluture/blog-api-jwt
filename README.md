@@ -1,2 +1,7 @@
-# Blog do código
-> Um blog simples em Node.js# blog-api-jwt
+# Blog do Código
+> Uma API de blog simples em Node.js
+
+- Node.js
+- Express
+- SQlite
+- JWT
