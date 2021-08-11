@@ -307,8 +307,61 @@ login: (req, res) => {
 
 `const token = jwt.sign(payload, process.env.CHAVE_JWT);`
 
-
 ### Estratégia para JWT
+
+- estratégia **Bearer** significa token de autenticação
+- instalar o módulo
+
+`npm i passport-http-bearer@1.0.1`
+
+- editar o arquivo `estrategias-autenticacao.js`
+- configurar a função de verificação para estratégia bearer token
+
+```javascript
+passport.use(
+  new BearerStrategy(async (token, done) => {
+    try {
+      const payload = jwt.verify(token, process.env.CHAVE_JWT);
+      const usuario = await Usuario.buscaPorId(payload.id);
+      done(null, usuario);
+    } catch (erro) {
+      done(erro);
+    }
+  })
+);
+```
+
+- implementar a estratégia nas rotas
+- modificar em `posts-rotas.js`, adicionando o middlaware do `passport` na rota post de criar posts (não esquecer de importat o passport acima)
+
+```javascript
+.post(
+      passport.authenticate("bearer", { session: false }),
+      postsControlador.adiciona
+    );
+```
+
+- modificar o `usuarios-rotas.js`, adicionando o middleware na rota de deletar usuário
+
+```javascript
+    .delete(
+      passport.authenticate("bearer", { session: false }),
+      usuariosControlador.deleta
+    );
+```
+
+- testar no Insomnia:
+  - sem autenticação = deve barrar
+    - criar post sem autenticação deve gerar status `401` 
+  - fazer login, com autenticação = deve funcionar
+    - copiar o token do header ao fazer login
+    - ir na requisição de criar post
+    - ir no header desta requisição
+    - colocar o tipo "Authorization"
+    - colocar o conteúdo "Bearer (token gerado)"
+    - ou ir na aba `Auth` do tipo `Bearer` e colar o token lá
+    - testar a requisição, que deve ser `201`
+
 
 ### Tratamento de erros do login
 
