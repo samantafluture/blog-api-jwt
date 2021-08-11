@@ -398,7 +398,11 @@ const { middlewaresAutenticacao } = require("../usuarios")
 app
     .route("/usuario/:id")
     .delete(middlewaresAutenticacao.bearer, usuariosControlador.deleta);
-````
+```
+
+## Implementando o logout com tokens
+
+[Instalar Redis no macOs](https://phoenixnap.com/kb/install-redis-on-mac)
 
 
 
