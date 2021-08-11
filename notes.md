@@ -151,5 +151,92 @@ await usuario.adicionaSenha(senha);
 
 ### Configurações
 
+Devemos configurar nosa primeira estratégia de autenticação, a estratégia local, que é a estratégia onde recebemos o email e a senha do nosso cliente. 
+
+Para facilitar a criação dos Middlewares de autenticação, usaremos dois módulos abaixo.
+
+1. instalar `passport` e o `passport-local`
+
+`npm i passport@0.4.1`
+`npm i passport-local@1.0.0`
+
+2. configurar a estratégia de autenticação
+
+- na pasta `usuarios/`, criar o arquivo `estrategias-autenticacao.js`
+
+3. instanciar uma nova estratégia local e fazer algumas modificações, passando nomes de campos que usamos no lugar do padrão
+
+```javascript
+passport.use(
+    new.LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'senha',
+        session: false
+    })
+)
+```
+
+4. criar a função de verificação
+
+- recebe 3 argumentos: email, senha e `done` (uma função callback do `passport-authenticate`)
+- objetivo: se dados estiverem válidos, a função devolve os dados para a função callback
+
+5. importar o módulo de estratégia de autenticação no `index.js`
+
+`estrategiasAutenticacao: requite('./estrategias-autenticacao.js')`
+
+6. inicializar a estratégia de autenticação no `app.js`
+
+`const { estrategiasAutenticacao } = require('./src/usuarios')`
+
+7. criar um controlador que vai implementar a resposta depois de um login bem-sucedido
+
+- vá em `usuarios-controlador.js`
+- se o login for bem sucedido, devolve 204 (página vazia): deu tudo certo e não tem nada na página
+
+```javascript
+login: (req, res) => {
+    res.status(204).send();
+  },
+```
+
+8. fazer as rotas de login em `usuarios-rotas.js`
+
+- criar uma nova rota de login
+
+```javascript
+app
+    .route('/usuario/login')
+    .post(usuariosControlador.login);
+```
+
+- inserir um método do `passport` para autenticação
+- importar o `passport`
+
+```javascript
+app
+    .route("/usuario/login")
+    .post(
+      passport.authenticate("local", { session: false }),
+      usuariosControlador.login
+    );
+```
+
+9. testar no Insomnia
+
+- criar uma nova requisição
+- chamar de "Efetua login"
+- tipo `POST` e via `form`
+- endereço: localhost:3000/usuario/login
+- preencher com email e senha cadastrados anteriomente
+- sucesso: `204`
+
+
+
+
+
+
+
+
 
 
