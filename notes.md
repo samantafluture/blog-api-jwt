@@ -231,6 +231,88 @@ app
 - preencher com email e senha cadastrados anteriomente
 - sucesso: `204`
 
+## Implementando autenticação com JWT
+
+- ainda há duas rotas desprotegidas: `adicionar post` e `deletar usuário`
+- como garantir a autenticação do usuário sem ter que ficam enviando email/senha toda hora?
+- vai realizar por meio de `tokens` 
+- em vez de usar email/senha, o cliente terá que enviar token
+- onde que ele vai conseguir este token?
+- no momento que se autentica com a estratégia local, ele recebe um token de volta
+- vai guardar e enviar pro servidor nas próximas requisições
+
+### Gerando tokens
+
+- implementar a criação do token e o seu envio para o usuário
+- vamos usar o pacote `json web token`
+
+`npm i jsonwebtoken@8.5.1`
+
+- implementar isso no `usuarios-controlador.js` fazendo uma função
+
+```javascript
+const jwt = require("jsonwebtoken");
+
+function criaTokenJWT(usuario) {
+  const payload = {
+    id: usuario.id,
+  };
+
+  const token = jwt.sign(payload, "senha-secreta");
+  return token;
+}
+```
+
+- modifica a função `login` para usar o `jwt`, criando o `token`
+- em seguida, envia este `token` ao usuário no `header`, mais especificamente, no `authorization`
+- o status http `204` não só emite uma resposta ok em branco como indica que os `headers` podem ser úteis
+
+```javascript
+login: (req, res) => {
+    const token = criaTokenJWT(req.user);
+    res.set("Authorization", token);
+    res.status(204).send();
+  },
+```
+
+- testar fazer o login no Insomnia
+- mandar o email e senha corretos
+- checar o status e a assinatura no `header authorization`
+
+### Senha segura para JWT
+
+- rodar um programa do node para gerar uma senha secreta segura
+
+`node -e "console.log( require('crypto').randomBytes(256).toString('base64'))"`
+
+- guardar essa senha gerada (uma string) dentro de uma variável de ambiente
+- dessa forma, você não publica em controle de versão
+- e também fica acessível em todos os pontos do seu programa
+- mais fácil de manter
+
+- criar um arquivo `.env` na raiz do projeto
+- colocar essa senha lá como `CHAVE_JWT="senha gerada"`
+- baixar um pacote para tornar essa senha legível pela aplicação node
+
+`npm i dotenv@8.2.0`
+
+- configurar o módulo no arquivo `server.js`
+- inserir o seguinte na primeira linha de código
+
+`require('dotenv').config();`
+
+- esta linha vai configurar todas as variáveis de ambiente da aplicação
+- em seguida, no `usuarios-controlador.js`
+- inserir a variável de ambiente que queremos no lugar de "senha-secreta", usando o método `process` do `env`
+
+`const token = jwt.sign(payload, process.env.CHAVE_JWT);`
+
+
+### Estratégia para JWT
+
+### Tratamento de erros do login
+
+### Tratamento de erros do token
 
 
 
