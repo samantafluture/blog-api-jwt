@@ -34,6 +34,15 @@
 
 ## Como usar
 
+### Instalar
+
+- Node.js
+- NPM
+- Redis 
+- Insomnia ou Postman
+
+### Comandos
+
 ```bash
 npm install
 npm start
@@ -46,10 +55,3 @@ Os comandos acima irão:
 - criar um banco de dados zerado (vide arquivo `.dbsqlite`)
 
 Não esqueça de deixar o Redis rodando em sua máquina também (`$ redis-server`).
-
-### Pré-requisitos
-
-- Node.js
-- NPM
-- Redis 
-- Insomnia ou Postman
