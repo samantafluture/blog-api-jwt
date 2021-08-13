@@ -423,7 +423,7 @@ if (erro && erro.name === 'TokenExpiredError') {
 -   colocar o token como chave de busca para a base
 -   token como chave e nada como valor
 
-### Redis
+### Usando o Redis
 
 [Instalar Redis no macOs](https://phoenixnap.com/kb/install-redis-on-mac)
 
@@ -443,7 +443,7 @@ if (erro && erro.name === 'TokenExpiredError') {
 -   criar o arquivo manipula-blacklist.js dentro da pasta /redis/
 -   serão duas funções que farão interação com a blacklist (adicionar e saber se tem token)
 
-### Implementar logout
+### Implementando logout
 
 -   recuperar o token
 -   adicionar o token como terceiro parâmetro no arquivo estrategias-autencicacao.js, dentro de passport.use()
@@ -463,3 +463,36 @@ logout: async (req, res) => {
 ```
 
 - ir no arquivo de rotas do usuário e criar a rota de logout
+
+```javascript
+app.route('/usuario/logout').get(
+        middlewaresAutenticacao.bearer,
+        usuariosControlador.logout
+    );
+```
+
+- testar a rota no Insomnia (fazer login primeiro, copiar o token e usar o token na estratégia de bearer em autenticação para fazer logout)
+- dá certo, porém se eu tento usar o token de novo em outra requisição, ele deixa pois ainda não tem a confirmação de que o token está na blacklist, ou seja, invalidado
+- precisamos implementar esta verificação
+
+### Verificando se o token está na blacklist
+
+- em estrategias-autenticacao.js, criar uma função para verificar o token na blacklist
+
+```javascript
+async function verificaTokenNaBlacklist(token) {
+    const tokenNaBlackList = await blacklist.contemToken(token);
+    if (tokenNaBlackList) {
+        throw new jwt.JsonWebTokenError('Token inválido por logout!');
+    }
+}
+```
+
+- chamar essa função de verificação dentro da função `passport.use` de estratégia bearer
+
+`await verificaTokenNaBlacklist(token);`
+
+- assim, ele verifica se o token está na blacklist ou não antes de fazer todo o processo
+
+- testar!
+
