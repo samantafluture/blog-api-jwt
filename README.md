@@ -34,7 +34,12 @@
 
 ## Como usar
 
-O comando `npm start` irá colocar a API no ar no `localhost:3000` e criará um banco de dados zerado (vide arquivo `.dbsqlite`).
+Rode:
+
+`npm install`
+`npm start` 
+
+Isso irá colocar a API no ar no `localhost:3000` e criará um banco de dados zerado (vide arquivo `.dbsqlite`).
 
 Não esqueça de deixar o Redis rodando em sua máquina também (`$ redis-server`).
 
@@ -43,3 +48,4 @@ Não esqueça de deixar o Redis rodando em sua máquina também (`$ redis-server
 - Node.js
 - NPM
 - Redis 
+- Insomnia ou Postman
