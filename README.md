@@ -34,12 +34,16 @@
 
 ## Como usar
 
-Rode:
+```bash
+npm install
+npm start
+```
 
-`npm install`
-`npm start` 
+Os comandos acima irão: 
 
-Isso irá colocar a API no ar no `localhost:3000` e criará um banco de dados zerado (vide arquivo `.dbsqlite`).
+- instalar os módulos necessários
+- colocar a API no ar no `localhost:3000`
+- criar um banco de dados zerado (vide arquivo `.dbsqlite`)
 
 Não esqueça de deixar o Redis rodando em sua máquina também (`$ redis-server`).
 
